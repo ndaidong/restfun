@@ -68,6 +68,65 @@ export const app = server.listen(PORT, HOST, () => {
 
 - not yet
 
+## APIs
+
+### `restfun`
+
+#### Syntax
+
+```ts
+restfun()
+restfun(Object options)
+```
+
+#### Parameters
+
+##### `options` *optional*
+
+- `enableCors`: bolean, default to `false`
+- `noDelay`: bolean, default to `true`
+- `keepAlive`: bolean, default to `false`
+- `maxHeaderSize`: number, default to `16384`
+- `headersTimeout`: number, default to `60000`
+- `requestTimeout`: number, default to `300000`
+
+For more info, refer [this link](https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener).
+
+#### Return
+
+Return a `restfun` instance with the following methods:
+
+- `get(pattern, handler)`: routes GET request to the specified pattern
+- `post(pattern, handler)`: routes POST request to the specified pattern
+- `put(pattern, handler)`: routes PUT request to the specified pattern
+- `delete(pattern, handler)`: routes DELETE request to the specified pattern
+- `use(handler)`: insert a handler in the middle of request/response processing, before the router handlers
+- `notFound(handler)`: add handler to deal with 404 error
+- `onError(handler)`: add handler to deal with other errors
+
+##### `patterns`
+
+A string follow URLPattern syntax, to specify path of router.
+
+Refer [URLPattern API](https://wicg.github.io/urlpattern/) and [URLPattern polyfill](https://www.npmjs.com/package/urlpattern-polyfill).
+
+
+##### `handler`
+
+A function that accepts an [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage) (a.k.a `req`) and a [ServerResponse](https://nodejs.org/api/http.html#class-httpserverresponse) (a.k.a `res`).
+
+In addition to what is inherited from prototype, `restfun` adds the following properties and methods.
+
+- `req.ip`
+- `req.params`
+- `req.query`
+- `req.body`
+- `res.type()`
+- `res.status()`
+- `res.json()`
+- `res.html()`
+- `res.send()`
+
 ## Test
 
 ```bash
