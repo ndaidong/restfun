@@ -12,9 +12,14 @@
     "pretest": "npm run lint",
     "test": "NODE_ENV=test PORT=3001 NODE_OPTIONS=--experimental-vm-modules jest --verbose --coverage=true --detectOpenHandles --force-exit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "bellajs": "^11.1.1",
+    "urlpattern-polyfill": "^6.0.2"
+  },
   "devDependencies": {
-    "eslint": "^8.29.0"
+    "eslint": "^8.29.0",
+    "jest": "^29.3.1",
+    "supertest": "^6.3.3"
   },
   "keywords": [
     "rest",
