@@ -109,6 +109,7 @@ For more info, refer [this link](https://nodejs.org/api/http.html#httpcreateserv
 
 Return a `restfun` instance with the following methods:
 
+- `listen(port, host, callback)`: start listening at the specified port
 - `get(pattern, handler)`: routes GET request to the specified pattern
 - `post(pattern, handler)`: routes POST request to the specified pattern
 - `put(pattern, handler)`: routes PUT request to the specified pattern

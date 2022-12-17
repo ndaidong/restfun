@@ -31,7 +31,7 @@ describe('check restfun instance', () => {
   })
 })
 
-describe('Check valid endpoints', () => {
+describe('Check regular REST requests', () => {
   test('GET /', (done) => {
     request(app)
       .get('/')
@@ -87,13 +87,29 @@ describe('Check valid endpoints', () => {
       .expect(200, done)
   })
 
+  test('POST /categories with form submit', (done) => {
+    request(app)
+      .post('/categories')
+      .type('form')
+      .send({
+        slug: 'politics',
+        name: 'Politics',
+      })
+      .expect('Content-Type', /json/)
+      .expect((res) => {
+        expect(isObject(res.body)).toBeTruthy()
+        expect(res.body.action).toEqual('addCategory')
+      })
+      .expect(200, done)
+  })
+
   test('GET /categories - Reload', (done) => {
     request(app)
       .get('/categories')
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.categories.length).toEqual(3)
+        expect(res.body.categories.length).toEqual(4)
       })
       .expect(200, done)
   })
@@ -144,7 +160,7 @@ describe('Check valid endpoints', () => {
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.categories.length).toEqual(2)
+        expect(res.body.categories.length).toEqual(3)
       })
       .expect(200, done)
   })
@@ -202,34 +218,11 @@ describe('Check valid endpoints', () => {
   })
 })
 
-describe('Check bad requests', () => {
-  test('POST /health', (done) => {
+describe('Check error requests', () => {
+  test('POST /categories', (done) => {
     request(app)
-      .post('/health')
-      .send('')
-      .expect('Content-Type', /text/)
-      .expect((res) => {
-        expect(res.text).toEqual('Bad Request')
-      })
-      .expect(400, done)
-  })
-
-  test('POST /healthy', (done) => {
-    request(app)
-      .post('/healthy')
-      .send({})
-      .expect('Content-Type', /text/)
-      .expect((res) => {
-        expect(res.text).toEqual('Not Found')
-      })
-      .expect(404, done)
-  })
-})
-
-describe('Check bad requests', () => {
-  test('POST /health', (done) => {
-    request(app)
-      .post('/health')
+      .post('/categories')
+      .set('Content-Type', 'application/json')
       .send('')
       .expect('Content-Type', /text/)
       .expect((res) => {
