@@ -20,7 +20,7 @@
     "urlpattern-polyfill": "^6.0.2"
   },
   "devDependencies": {
-    "eslint": "^8.29.0",
+    "eslint": "^8.30.0",
     "jest": "^29.3.1",
     "supertest": "^6.3.3"
   },
