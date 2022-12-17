@@ -43,6 +43,19 @@ server.get('/health', (req, res) => {
   res.json({ status: 'ok' })
 })
 
+server.post('/posts', (req, res) => {
+  res.json({
+    data: req.body,
+  })
+})
+
+server.put('/posts/:postId', (req, res) => {
+  res.json({
+    postId: req.params.postId,
+    data: req.body,
+  })
+})
+
 server.notFound((req, res) => {
   res.status(404).send('Not Found')
 })
@@ -106,7 +119,7 @@ Return a `restfun` instance with the following methods:
 
 ##### `patterns`
 
-A string follow URLPattern syntax, to specify path of router.
+A string that follows URLPattern syntax, to specify path of router.
 
 Refer [URLPattern API](https://wicg.github.io/urlpattern/) and [URLPattern polyfill](https://www.npmjs.com/package/urlpattern-polyfill).
 
@@ -115,7 +128,7 @@ Refer [URLPattern API](https://wicg.github.io/urlpattern/) and [URLPattern polyf
 
 A function that accepts an [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage) (a.k.a `req`) and a [ServerResponse](https://nodejs.org/api/http.html#class-httpserverresponse) (a.k.a `res`).
 
-In addition to what is inherited from prototype, `restfun` adds the following properties and methods.
+Along with what are inherited from their prototype, `restfun` adds the following properties and methods to `req`/`res`:
 
 - `req.ip`
 - `req.params`
@@ -126,6 +139,7 @@ In addition to what is inherited from prototype, `restfun` adds the following pr
 - `res.json()`
 - `res.html()`
 - `res.send()`
+
 
 ## Test
 
