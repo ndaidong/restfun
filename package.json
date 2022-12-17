@@ -3,6 +3,9 @@
   "version": "0.0.1rc1",
   "description": "REST for fun, almost native modules",
   "author": "@ndaidong",
+  "engines": {
+    "node": ">= 16"
+  },
   "main": "index.js",
   "type": "module",
   "scripts": {
