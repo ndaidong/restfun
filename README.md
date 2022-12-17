@@ -26,7 +26,7 @@ pnpm i restfun
 
 ## Usage
 
-Node.js 16+
+### Node.js
 
 ```js
 // server.js
@@ -59,6 +59,14 @@ export const app = server.listen(PORT, HOST, () => {
 })
 
 ```
+
+### Bun
+
+- not yet
+
+### Deno
+
+- not yet
 
 ## Test
 
