@@ -120,7 +120,6 @@ describe('Check valid endpoints', () => {
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(isObject(res.body)).toBeTruthy()
-        console.log(res.body)
         expect(res.body.slug).toEqual('tech')
         expect(res.body.name).toEqual('Tech')
       })
@@ -135,7 +134,6 @@ describe('Check valid endpoints', () => {
         expect(isObject(res.body)).toBeTruthy()
         expect(res.body.action).toEqual('removeCategory')
         expect(res.body.slug).toEqual('sport')
-        console.log(res.body)
       })
       .expect(200, done)
   })

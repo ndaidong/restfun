@@ -1,6 +1,6 @@
 {
   "name": "restfun",
-  "version": "0.0.1rc2",
+  "version": "0.0.1",
   "description": "REST for fun, almost native modules",
   "author": "@ndaidong",
   "engines": {
