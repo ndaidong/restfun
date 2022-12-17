@@ -2,7 +2,7 @@
 
 To run minimal rest api with almost native modules.
 
-[![npm version](https://badge.fury.io/js/ndaidong/restfun.svg)](https://badge.fury.io/js/ndaidong/restfun)
+[![npm version](https://badge.fury.io/js/restfun.svg)](https://badge.fury.io/js/restfun)
 ![CodeQL](https://github.com/ndaidong/restfun/workflows/CodeQL/badge.svg)
 ![CI test](https://github.com/ndaidong/restfun/workflows/ci-test/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/restfun/badge.svg)](https://coveralls.io/github/ndaidong/restfun)
