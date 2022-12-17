@@ -4,7 +4,7 @@
   "description": "REST for fun, almost native modules",
   "author": "@ndaidong",
   "engines": {
-    "node": ">= 16"
+    "node": ">= 18"
   },
   "main": "index.js",
   "type": "module",
