@@ -1,0 +1,26 @@
+{
+  "name": "restfun",
+  "version": "0.0.1rc1",
+  "description": "REST for fun, almost native modules",
+  "author": "@ndaidong",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "PORT=3001 node tests/server.js",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "pretest": "npm run lint",
+    "test": "NODE_ENV=test PORT=3001 NODE_OPTIONS=--experimental-vm-modules jest --verbose --coverage=true --detectOpenHandles --force-exit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^8.29.0"
+  },
+  "keywords": [
+    "rest",
+    "api",
+    "server",
+    "restapi"
+  ],
+  "license": "MIT"
+}
