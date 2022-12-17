@@ -24,11 +24,9 @@ const MIME_TYPES = {
   svg: 'image/svg+xml',
 }
 
-const TYPES_FOR_PARSER = [
+const TYPES_FOR_BODY_PARSER = [
   'application/json',
   'application/x-www-form-urlencoded',
-  'multipart/form-data',
-  'application/octet-stream',
 ]
 
 const doNothing = () => {}
@@ -38,6 +36,21 @@ const getIp = (req) => {
   const remoteAddress = connection.remoteAddress || socket.remoteAddress
   const socketAddress = connection.socket?.remoteAddress
   return headers['x-forwarded-for'] || remoteAddress || socketAddress || ''
+}
+
+const getQuery = (qsearch) => {
+  const params = new URLSearchParams(decodeURIComponent(qsearch))
+  const query = {}
+  for (const [name, value] of params) {
+    if (!hasProperty(query, name)) {
+      query[name] = value
+    } else {
+      const currentVal = query[name]
+      const xvals = isArray(currentVal) ? currentVal : [currentVal]
+      query[name] = [...xvals, value]
+    }
+  }
+  return query
 }
 
 const addRequestProperties = (req) => {
@@ -117,24 +130,13 @@ export default (opts = {}) => {
 
   const parseQuery = (req) => {
     const url = new URLPattern(req.url, SIM_BASE_URL)
-    const params = new URLSearchParams(url.search)
-    const query = {}
-    for (const [name, value] of params) {
-      if (!hasProperty(query, name)) {
-        query[name] = value
-      } else {
-        const currentVal = query[name]
-        const xvals = isArray(currentVal) ? currentVal : [currentVal]
-        query[name] = [...xvals, value]
-      }
-    }
-    req.query = query
+    req.query = getQuery(url.search)
   }
 
   const parseBody = (req, res) => {
     return new Promise((resolve) => {
       const ct = req.headers['content-type'] || ''
-      if (!TYPES_FOR_PARSER.includes(ct)) {
+      if (!TYPES_FOR_BODY_PARSER.includes(ct)) {
         return resolve()
       }
 
@@ -144,8 +146,7 @@ export default (opts = {}) => {
       }).on('end', () => {
         try {
           const body = Buffer.concat(bodyParts).toString()
-          const sdata = decodeURIComponent(body)
-          const data = JSON.parse(sdata)
+          const data = (ct === 'application/json') ? JSON.parse(body) : getQuery(body)
           req.body = data
         } catch (err) {
           err.errorCode = 400
