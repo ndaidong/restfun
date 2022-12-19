@@ -6,6 +6,8 @@ To run minimal rest api with almost native modules.
 ![CodeQL](https://github.com/ndaidong/restfun/workflows/CodeQL/badge.svg)
 ![CI test](https://github.com/ndaidong/restfun/workflows/ci-test/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/restfun/badge.svg)](https://coveralls.io/github/ndaidong/restfun)
+[![CodeFactor](https://www.codefactor.io/repository/github/ndaidong/restfun/badge)](https://www.codefactor.io/repository/github/ndaidong/restfun)
+
 
 ## Install
 
