@@ -142,9 +142,7 @@ Return a `restfun` instance with the following methods:
 
 ##### `patterns`
 
-A string that follows URLPattern syntax, to specify path of router.
-
-Refer [URLPattern API](https://wicg.github.io/urlpattern/) and [URLPattern polyfill](https://www.npmjs.com/package/urlpattern-polyfill).
+Pattern of router. Refer [find-my-way](https://github.com/delvedor/find-my-way)
 
 
 ##### `handler`
@@ -162,6 +160,16 @@ Along with what are inherited from their prototype, `restfun` adds the following
 - `res.json()`
 - `res.html()`
 - `res.send()`
+
+
+## Benchmark
+
+
+```sh
+autocannon -c 100 -w 4 -d 20 http://0.0.0.0:3001
+```
+
+![Benchmark](https://i.imgur.com/8utEEbi.png)
 
 
 ## Test
