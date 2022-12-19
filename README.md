@@ -6,6 +6,8 @@ To run minimal rest api with almost native modules.
 ![CodeQL](https://github.com/ndaidong/restfun/workflows/CodeQL/badge.svg)
 ![CI test](https://github.com/ndaidong/restfun/workflows/ci-test/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/restfun/badge.svg)](https://coveralls.io/github/ndaidong/restfun)
+[![CodeFactor](https://www.codefactor.io/repository/github/ndaidong/restfun/badge)](https://www.codefactor.io/repository/github/ndaidong/restfun)
+
 
 ## Install
 
@@ -96,14 +98,34 @@ restfun(Object options)
 
 ##### `options` *optional*
 
-- `enableCors`: bolean, default to `false`
+- `cors`: object, headers for cors, default to `{}`
 - `noDelay`: bolean, default to `true`
 - `keepAlive`: bolean, default to `false`
 - `maxHeaderSize`: number, default to `16384`
 - `headersTimeout`: number, default to `60000`
 - `requestTimeout`: number, default to `300000`
 
-For more info, refer [this link](https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener).
+Regarding `cors`, by default, `restfun` enalbe CORS by auto adding the following headers:
+
+```bash
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: authorization, token, x-token, apikey, x-api-key
+```
+
+Developer can modify, or add more via `cors` options, for example:
+
+```js
+import restfun from 'restfun'
+
+export const server = restfun({
+  cors: {
+    'Access-Control-Allow-Origin': 'https://myownfrontend.com', // overwrite
+    'Access-Control-Allow-Credentials': 'true'
+  }
+})
+```
+
+For other options, refer [this link](https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener).
 
 #### Return
 
