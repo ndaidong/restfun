@@ -18,6 +18,10 @@ server.get('/fatal', () => {
   throw new Error('fatal error')
 })
 
+server.onError((err, req, res) => {
+  res.status(err.errorCode).send('Server Internal Error')
+})
+
 const app = server.listen(PORT)
 
 describe('Check notfound request', () => {
@@ -31,13 +35,13 @@ describe('Check notfound request', () => {
   })
 })
 
-// describe('Check server error request', () => {
-//   test('GET /fatal should throw error 500', (done) => {
-//     request(app)
-//       .get('/fatal')
-//       .expect((res) => {
-//         expect(res.text).toEqual('Server Internal Error')
-//       })
-//       .expect(500, done)
-//   })
-// })
+describe('Check server error request', () => {
+  test('GET /fatal should throw error 500', (done) => {
+    request(app)
+      .get('/fatal')
+      .expect((res) => {
+        expect(res.text).toEqual('Server Internal Error')
+      })
+      .expect(500, done)
+  })
+})
