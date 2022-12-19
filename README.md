@@ -169,7 +169,7 @@ Along with what are inherited from their prototype, `restfun` adds the following
 autocannon -c 100 -w 4 -d 20 http://0.0.0.0:3001
 ```
 
-[Benchmark](https://i.imgur.com/8utEEbi.png)
+![Benchmark](https://i.imgur.com/8utEEbi.png)
 
 
 ## Test
