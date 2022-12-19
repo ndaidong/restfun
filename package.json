@@ -1,6 +1,6 @@
 {
   "name": "restfun",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "REST for fun, almost native modules",
   "homepage": "https://www.npmjs.com/package/restfun",
   "repository": {
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "bellajs": "^11.1.1",
-    "urlpattern-polyfill": "^6.0.2"
+    "find-my-way": "^7.3.1"
   },
   "devDependencies": {
     "eslint": "^8.30.0",

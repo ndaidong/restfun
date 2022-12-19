@@ -2,12 +2,11 @@
 
 import http, { STATUS_CODES } from 'node:http'
 import { EventEmitter } from 'node:events'
+import querystring from 'node:querystring'
 
-import { isArray, isFunction, hasProperty, genid } from 'bellajs'
+import findMyWay from 'find-my-way'
 
-if (!globalThis.URLPattern) {
-  await import('urlpattern-polyfill')
-}
+import { isFunction } from 'bellajs'
 
 const MIME_TYPES = {
   stream: 'application/octet-stream',
@@ -36,21 +35,6 @@ const getIp = (req) => {
   const remoteAddress = connection.remoteAddress || socket.remoteAddress
   const socketAddress = connection.socket?.remoteAddress
   return headers['x-forwarded-for'] || remoteAddress || socketAddress || ''
-}
-
-const getQuery = (qsearch) => {
-  const params = new URLSearchParams(decodeURIComponent(qsearch))
-  const query = {}
-  for (const [name, value] of params) {
-    if (!hasProperty(query, name)) {
-      query[name] = value
-    } else {
-      const currentVal = query[name]
-      const xvals = isArray(currentVal) ? currentVal : [currentVal]
-      query[name] = [...xvals, value]
-    }
-  }
-  return query
 }
 
 const addRequestProperties = (req) => {
@@ -97,7 +81,17 @@ const addResponseMethods = (req, res) => {
 export default (opts = {}) => {
   const emitter = new EventEmitter()
 
-  const SIM_BASE_URL = `http://rest-${genid(80)}.fun`
+  const router = findMyWay({
+    allowUnsafeRegex: false,
+    caseSensitive: true,
+    defaultRoute: (req, res) => {
+      emitter.emit('notfound', req, res)
+
+      if (!res.writableEnded) {
+        res.type('').status(404).end(STATUS_CODES['404'])
+      }
+    },
+  })
 
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -135,11 +129,6 @@ export default (opts = {}) => {
     }
   }
 
-  const parseQuery = (req) => {
-    const url = new URLPattern(req.url, SIM_BASE_URL)
-    req.query = getQuery(url.search)
-  }
-
   const parseBody = (req, res) => {
     return new Promise((resolve) => {
       const ct = req.headers['content-type'] || ''
@@ -153,7 +142,7 @@ export default (opts = {}) => {
       }).on('end', () => {
         try {
           const body = Buffer.concat(bodyParts).toString()
-          const data = (ct === 'application/json') ? JSON.parse(body) : getQuery(body)
+          const data = (ct === 'application/json') ? JSON.parse(body) : querystring.parse(body)
           req.body = data
         } catch (err) {
           err.errorCode = 400
@@ -170,63 +159,28 @@ export default (opts = {}) => {
     addRequestProperties,
     addResponseMethods,
     addCorsHeaders,
-    parseQuery,
     parseBody,
   ]
 
-  const middlewares = []
-
   const addRoute = (method = '*', pattern = '*', handle = doNothing) => {
-    const urlpattern = new URLPattern({ pathname: pattern })
-    middlewares.push({
-      method: method.toUpperCase(),
-      pattern: urlpattern,
-      handle,
+    router.on(method, pattern, async (req, res, params, store, searchParams) => { // eslint-disable-line
+      req.query = searchParams
+      req.params = params
+      try {
+        await handle(req, res)
+      } catch (err) {
+        err.errorCode = 500
+        emitter.emit('error', err, req, res)
+        res.status(500).send(STATUS_CODES['500'])
+      }
     })
-  }
-
-  const isCallable = (method, pattern, req) => {
-    if (method !== req.method) {
-      return false
-    }
-    const reqUrlPattern = new URLPattern(req.url, SIM_BASE_URL)
-    const re = pattern.exec(reqUrlPattern)
-    if (re) {
-      req.params = { ...re.pathname.groups }
-      return true
-    }
-    return false
   }
 
   const onHttpRequest = async (req, res) => {
     for (const fn of modifications) {
       await fn(req, res)
     }
-
-    for (const item of middlewares) {
-      const { method, pattern, handle } = item
-      if (res.writableEnded) {
-        break
-      }
-      if (isCallable(method, pattern, req)) {
-        try {
-          await handle(req, res)
-        } catch (err) {
-          err.errorCode = 500
-          emitter.emit('error', err, req, res)
-          res.status(500).send(STATUS_CODES['500'])
-          break
-        }
-      }
-    }
-
-    if (!res.writableEnded) {
-      emitter.emit('notfound', req, res)
-    }
-
-    if (!res.writableEnded) {
-      res.type('').status(404).end(STATUS_CODES['404'])
-    }
+    router.lookup(req, res)
   }
 
   const listen = (port = 7001, host = '0.0.0.0', callback = false) => {
