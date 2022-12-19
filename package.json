@@ -1,6 +1,6 @@
 {
   "name": "restfun",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "REST for fun, almost native modules",
   "homepage": "https://www.npmjs.com/package/restfun",
   "repository": {
@@ -11,7 +11,7 @@
   "main": "./index.js",
   "type": "module",
   "engines": {
-    "node": ">= 18"
+    "node": ">= 14"
   },
   "scripts": {
     "start": "PORT=3001 node tests/server.js",

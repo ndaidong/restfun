@@ -68,7 +68,7 @@ const addResponseMethods = (req, res) => {
   }
 
   res.type = (ct = 'text') => {
-    res.setHeader('Content-Type', MIME_TYPES[ct] || MIME_TYPES.text)
+    res.setHeader('Content-Type', MIME_TYPES[ct] || ct)
     return res
   }
 
@@ -99,14 +99,24 @@ export default (opts = {}) => {
 
   const SIM_BASE_URL = `http://rest-${genid(80)}.fun`
 
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, token, x-token, apikey, x-api-key',
+  }
+
   const {
-    enableCors = false,
+    cors = {},
     noDelay = true,
     keepAlive = false,
     maxHeaderSize = 16384,
     headersTimeout = 60000,
     requestTimeout = 300000,
   } = opts
+
+  Object.keys(cors).forEach((k) => {
+    const v = cors[k]
+    corsHeaders[k] = v
+  })
 
   const serverOptions = {
     noDelay,
@@ -117,12 +127,9 @@ export default (opts = {}) => {
   }
 
   const addCorsHeaders = (req, res) => {
-    if (!enableCors) {
-      return false
-    }
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader('Access-Control-Allow-Headers', 'authorization, token, x-token, apikey, x-api-key')
-    res.setHeader('Access-Control-Allow-Credentials', true)
+    Object.keys(corsHeaders).forEach((k) => {
+      res.setHeader(k, corsHeaders[k])
+    })
     if (req.method === 'OPTIONS') {
       res.status(204).send()
     }
@@ -178,7 +185,7 @@ export default (opts = {}) => {
     })
   }
 
-  const shouldCall = (method, pattern, req) => {
+  const isCallable = (method, pattern, req) => {
     if (method !== req.method) {
       return false
     }
@@ -201,7 +208,7 @@ export default (opts = {}) => {
       if (res.writableEnded) {
         break
       }
-      if (shouldCall(method, pattern, req)) {
+      if (isCallable(method, pattern, req)) {
         try {
           await handle(req, res)
         } catch (err) {

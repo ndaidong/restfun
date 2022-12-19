@@ -8,8 +8,8 @@ import restfun from '../index.js'
 
 const PORT = process.env.PORT || 4001
 
-describe('Check option `enableCors`', () => {
-  test('GET / without cors', (done) => {
+describe('Check option `cors`', () => {
+  test('GET / with default cors enabled', (done) => {
     const server = restfun()
     server.get('/', (req, res) => {
       res.html('Hello restfun')
@@ -20,13 +20,17 @@ describe('Check option `enableCors`', () => {
       .expect('Content-Type', /html/)
       .expect((res) => {
         expect(res.text).toEqual('Hello restfun')
-        expect(res.headers['access-control-allow-origin']).toEqual(undefined)
+        expect(res.headers['access-control-allow-origin']).toEqual('*')
       })
       .expect(200, done)
   })
 
-  test('GET / with cors', (done) => {
-    const server = restfun({ enableCors: true })
+  test('GET / with modified cors option', (done) => {
+    const server = restfun({
+      cors: {
+        'Access-Control-Allow-Origin': 'https://rest.fun',
+      },
+    })
     server.get('/', (req, res) => {
       res.html('Hello restfun')
     })
@@ -36,7 +40,7 @@ describe('Check option `enableCors`', () => {
       .expect('Content-Type', /html/)
       .expect((res) => {
         expect(res.text).toEqual('Hello restfun')
-        expect(res.headers['access-control-allow-origin']).toEqual('*')
+        expect(res.headers['access-control-allow-origin']).toEqual('https://rest.fun')
       })
       .expect(200, done)
 
