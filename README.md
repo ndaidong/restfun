@@ -30,49 +30,18 @@ pnpm i restfun
 
 ### Node.js
 
-```js
-// server.js
+Hello word with `restfun`:
 
+```js
 import restfun from 'restfun'
 
-export const server = restfun()
+const server = restfun()
 
 server.get('/', (req, res) => {
-  res.html('Hello restfun')
+  res.html('Hello world')
 })
 
-server.get('/health', (req, res) => {
-  res.json({ status: 'ok' })
-})
-
-server.post('/posts', (req, res) => {
-  res.json({
-    data: req.body,
-  })
-})
-
-server.put('/posts/:postId', (req, res) => {
-  res.json({
-    postId: req.params.postId,
-    data: req.body,
-  })
-})
-
-server.notFound((req, res) => {
-  res.status(404).send('Not Found')
-})
-
-server.onError((err, req, res) => {
-  res.status(err.errorCode).send('Something went wrong')
-})
-
-const HOST = process.env.HOST || '0.0.0.0'
-const PORT = process.env.PORT || 4001
-
-export const app = server.listen(PORT, HOST, () => {
-  console.log(`Server is running at http://${HOST}:${PORT}`)
-})
-
+server.listen(3001)
 ```
 
 ### Bun
@@ -161,26 +130,27 @@ Along with what are inherited from their prototype, `restfun` adds the following
 - `res.html()`
 - `res.send()`
 
-
 ## Benchmark
-
 
 ```sh
 autocannon -c 100 -w 4 -d 20 http://0.0.0.0:3001
 ```
 
-![Benchmark](https://i.imgur.com/8utEEbi.png)
+![Benchmark](https://i.imgur.com/vmZSAwT.png)
+
+- Intel® Core™ i7-10510U CPU @ 1.80GHz × 8
+- RAM DDR4 2667 MT/s 16GB
+- Node.js v18.12.1 on Debian 11.6
 
 
 ## Test
 
 ```bash
 git clone https://github.com/ndaidong/restfun.git
-cd ndaidong/restfun
+cd restfun
 pnpm i
 pnpm test
 ```
-
 
 ## License
 The MIT License (MIT)
