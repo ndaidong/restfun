@@ -1,11 +1,11 @@
 // index.js
 
-import http, { STATUS_CODES } from 'node:http'
+import http, { STATUS_CODES, METHODS } from 'node:http'
 import querystring from 'node:querystring'
 import { EventEmitter } from 'node:events'
 
 import findMyWay from 'find-my-way'
-import { isFunction } from 'bellajs'
+import { isFunction, genid } from 'bellajs'
 
 const MIME_TYPES = {
   stream: 'application/octet-stream',
@@ -27,6 +27,8 @@ const TYPES_FOR_BODY_PARSER = [
   'application/x-www-form-urlencoded',
 ]
 
+const SIM_BASE_URL = `http://rest-${genid(80)}.fun`
+
 const doNothing = () => {}
 
 const getIp = (req) => {
@@ -42,6 +44,8 @@ const addRequestProperties = (req) => {
   req.params = {}
   req.query = {}
   req.body = {}
+  const url = new URL(req.url, SIM_BASE_URL)
+  req.path = url.pathname
 }
 
 const addResponseMethods = (req, res) => {
@@ -217,6 +221,13 @@ export default (opts = {}) => {
     delete: (...args) => {
       const pattern = args.shift()
       addRoute('DELETE', pattern, args)
+    },
+    route: (...args) => {
+      const method = args.shift()
+      if (args.length > 1 && METHODS.includes(method)) {
+        const pattern = args.shift()
+        addRoute(method, pattern, args)
+      }
     },
     use: (handle) => {
       modifications.push(handle)

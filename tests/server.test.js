@@ -245,6 +245,17 @@ describe('Check auth with multi handlers', () => {
   })
 })
 
+describe('Check route() method', () => {
+  test('GET /health', (done) => {
+    request(app)
+      .get('/health')
+      .expect((res) => {
+        expect(res.text).toEqual('ok')
+      })
+      .expect(200, done)
+  })
+})
+
 describe('Check error requests', () => {
   test('POST /categories', (done) => {
     request(app)

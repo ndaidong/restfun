@@ -113,6 +113,10 @@ server.get('/', (req, res) => {
   res.html('Hello restfun')
 })
 
+server.route('GET', '/health', (req, res) => {
+  res.html('ok')
+})
+
 server.notFound((req, res) => {
   res.status(404).send('Not Found')
 })

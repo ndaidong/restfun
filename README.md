@@ -105,6 +105,7 @@ Return a `restfun` instance with the following methods:
 - `post(pattern, handler)`: routes POST request to the specified pattern
 - `put(pattern, handler)`: routes PUT request to the specified pattern
 - `delete(pattern, handler)`: routes DELETE request to the specified pattern
+- `route(METHOD, pattern, handler`: another way to add router using any HTTP methods
 - `use(handler)`: insert a handler in the middle of request/response processing, before the router handlers
 - `notFound(handler)`: add handler to deal with 404 error
 - `onError(handler)`: add handler to deal with other errors

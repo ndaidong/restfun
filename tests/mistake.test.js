@@ -10,10 +10,6 @@ const PORT = process.env.PORT || 4001
 
 const server = restfun()
 
-server.get('/', (req, res) => {
-  res.html('Hello restfun')
-})
-
 server.get('/fatal', () => {
   throw new Error('fatal error')
 })

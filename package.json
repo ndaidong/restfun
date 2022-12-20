@@ -1,7 +1,7 @@
 {
   "name": "restfun",
-  "version": "0.0.7",
-  "description": "REST for fun, almost native modules",
+  "version": "0.0.8",
+  "description": "Minimal and fast rest api on the edges",
   "homepage": "https://www.npmjs.com/package/restfun",
   "repository": {
     "type": "git",
