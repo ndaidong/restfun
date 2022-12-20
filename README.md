@@ -2,7 +2,7 @@
 
 To run minimal and fast rest api on the edges.
 
-[![npm](https://img.shields.io/npm/v/restfun)](https://www.npmjs.com/package/restfun)
+[![npm](https://img.shields.io/npm/v/restfun?color=green)](https://www.npmjs.com/package/restfun)
 [![CodeQL](https://github.com/ndaidong/restfun/workflows/CodeQL/badge.svg)](https://github.com/ndaidong/restfun/actions/workflows/codeql-analysis.yml)
 [![CI test](https://github.com/ndaidong/restfun/workflows/ci-test/badge.svg)](https://github.com/ndaidong/restfun/actions/workflows/ci-test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/restfun/badge.svg)](https://coveralls.io/github/ndaidong/restfun)
