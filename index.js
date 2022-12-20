@@ -173,6 +173,9 @@ export default (opts = {}) => {
       req.params = params
       for (const handle of handlers) {
         try {
+          if (res.writableEnded) {
+            break
+          }
           await handle(req, res)
         } catch (err) {
           err.errorCode = 500
