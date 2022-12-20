@@ -192,6 +192,9 @@ export default (opts = {}) => {
 
   const onHttpRequest = async (req, res) => {
     for (const fn of modifications) {
+      if (res.writableEnded) {
+        break
+      }
       await fn(req, res)
     }
     router.lookup(req, res)
