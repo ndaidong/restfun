@@ -1,10 +1,10 @@
 # restfun
 
-To run minimal rest api with almost native modules.
+To run minimal and fast rest api on the edges.
 
-[![npm version](https://badge.fury.io/js/restfun.svg)](https://badge.fury.io/js/restfun)
-![CodeQL](https://github.com/ndaidong/restfun/workflows/CodeQL/badge.svg)
-![CI test](https://github.com/ndaidong/restfun/workflows/ci-test/badge.svg)
+[![npm](https://img.shields.io/npm/v/restfun)](https://www.npmjs.com/package/restfun)
+[![CodeQL](https://github.com/ndaidong/restfun/workflows/CodeQL/badge.svg)](https://github.com/ndaidong/restfun/actions/workflows/codeql-analysis.yml)
+[![CI test](https://github.com/ndaidong/restfun/workflows/ci-test/badge.svg)](https://github.com/ndaidong/restfun/actions/workflows/ci-test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/restfun/badge.svg)](https://coveralls.io/github/ndaidong/restfun)
 [![CodeFactor](https://www.codefactor.io/repository/github/ndaidong/restfun/badge)](https://www.codefactor.io/repository/github/ndaidong/restfun)
 
