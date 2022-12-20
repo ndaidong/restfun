@@ -87,6 +87,28 @@ server.get('/categories/:slug/search', (req, res) => {
   })
 })
 
+// this endpoint requires authentication
+const MY_TOKEN = 'Bearer Ot1R4UfJ5P510t1tpyU2G8iM341V0bWLw485DauF'
+const auth = (req, res) => {
+  const token = req.headers['authorization']
+  console.log(token)
+  if (token !== MY_TOKEN) {
+    res.status(401).json({
+      status: 'error',
+      message: 'Unauthorized',
+    })
+  }
+}
+server.get('/account/balance', auth, (req, res) => {
+  res.json({
+    status: 'ok',
+    balance: {
+      total: 7500000,
+      currency: 'USD',
+    },
+  })
+})
+
 server.get('/', (req, res) => {
   res.html('Hello restfun')
 })

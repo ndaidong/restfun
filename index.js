@@ -1,11 +1,10 @@
 // index.js
 
 import http, { STATUS_CODES } from 'node:http'
-import { EventEmitter } from 'node:events'
 import querystring from 'node:querystring'
+import { EventEmitter } from 'node:events'
 
 import findMyWay from 'find-my-way'
-
 import { isFunction } from 'bellajs'
 
 const MIME_TYPES = {
@@ -47,18 +46,22 @@ const addRequestProperties = (req) => {
 
 const addResponseMethods = (req, res) => {
   res.status = (code = 200) => {
-    res.statusCode = code
+    if (!res.writableEnded) {
+      res.statusCode = code
+    }
     return res
   }
 
   res.type = (ct = 'text') => {
-    res.setHeader('Content-Type', MIME_TYPES[ct] || ct)
+    if (!res.writableEnded) {
+      res.setHeader('Content-Type', MIME_TYPES[ct] || ct)
+    }
     return res
   }
 
   res.send = (val) => {
     if (res.writableEnded) {
-      return false
+      return res
     }
     const ct = res.getHeader('content-type')
     if (!ct) {
@@ -68,13 +71,11 @@ const addResponseMethods = (req, res) => {
   }
 
   res.html = (html) => {
-    res.type('html')
-    res.send(html)
+    res.type('html').send(html)
   }
 
   res.json = (data) => {
-    res.type('json')
-    res.send(JSON.stringify(data))
+    res.type('json').send(JSON.stringify(data))
   }
 }
 
@@ -131,6 +132,10 @@ export default (opts = {}) => {
 
   const parseBody = (req, res) => {
     return new Promise((resolve) => {
+      const { method } = req
+      if (method === 'GET') {
+        return resolve()
+      }
       const ct = req.headers['content-type'] || ''
       if (!TYPES_FOR_BODY_PARSER.includes(ct)) {
         return resolve()
@@ -162,16 +167,18 @@ export default (opts = {}) => {
     parseBody,
   ]
 
-  const addRoute = (method = '*', pattern = '*', handle = doNothing) => {
+  const addRoute = (method, pattern, handlers = []) => {
     router.on(method, pattern, async (req, res, params, store, searchParams) => { // eslint-disable-line
       req.query = searchParams
       req.params = params
-      try {
-        await handle(req, res)
-      } catch (err) {
-        err.errorCode = 500
-        emitter.emit('error', err, req, res)
-        res.status(500).send(STATUS_CODES['500'])
+      for (const handle of handlers) {
+        try {
+          await handle(req, res)
+        } catch (err) {
+          err.errorCode = 500
+          emitter.emit('error', err, req, res)
+          res.status(500).send(STATUS_CODES['500'])
+        }
       }
     })
   }
@@ -192,17 +199,21 @@ export default (opts = {}) => {
 
   return {
     listen,
-    get: (pattern, handle) => {
-      addRoute('GET', pattern, handle)
+    get: (...args) => {
+      const pattern = args.shift()
+      addRoute('GET', pattern, args)
     },
-    put: (pattern, handle) => {
-      addRoute('PUT', pattern, handle)
+    put: (...args) => {
+      const pattern = args.shift()
+      addRoute('PUT', pattern, args)
     },
-    post: (pattern, handle) => {
-      addRoute('POST', pattern, handle)
+    post: (...args) => {
+      const pattern = args.shift()
+      addRoute('POST', pattern, args)
     },
-    delete: (pattern, handle) => {
-      addRoute('DELETE', pattern, handle)
+    delete: (...args) => {
+      const pattern = args.shift()
+      addRoute('DELETE', pattern, args)
     },
     use: (handle) => {
       modifications.push(handle)

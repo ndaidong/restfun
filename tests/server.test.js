@@ -218,6 +218,33 @@ describe('Check regular REST requests', () => {
   })
 })
 
+describe('Check auth with multi handlers', () => {
+  test('GET /account/balance - without token', (done) => {
+    request(app)
+      .get('/account/balance')
+      .expect('Content-Type', /json/)
+      .expect((res) => {
+        expect(isObject(res.body)).toBeTruthy()
+        expect(res.body.status).toEqual('error')
+        expect(res.body.message).toEqual('Unauthorized')
+      })
+      .expect(401, done)
+  })
+
+  test('GET /account/balance - with token', (done) => {
+    request(app)
+      .get('/account/balance')
+      .set('Authorization', 'Bearer Ot1R4UfJ5P510t1tpyU2G8iM341V0bWLw485DauF')
+      .expect('Content-Type', /json/)
+      .expect((res) => {
+        expect(isObject(res.body)).toBeTruthy()
+        expect(res.body.status).toEqual('ok')
+        expect(res.body.balance.total).toEqual(7500000)
+      })
+      .expect(200, done)
+  })
+})
+
 describe('Check error requests', () => {
   test('POST /categories', (done) => {
     request(app)
