@@ -112,7 +112,13 @@ Return a `restfun` instance with the following methods:
 
 ##### `patterns`
 
-Pattern of router. Refer [find-my-way](https://github.com/delvedor/find-my-way)
+This lib only support simple pattern, e.g,:
+
+- `/:category/:slug`
+- `/profile/:userid/`
+- `/accounts/:userid/settings`
+- `/search`
+- `/`
 
 
 ##### `handler`
