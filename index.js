@@ -4,8 +4,7 @@ import http, { STATUS_CODES, METHODS } from 'node:http'
 import querystring from 'node:querystring'
 import { EventEmitter } from 'node:events'
 
-import findMyWay from 'find-my-way'
-import { isFunction, genid } from 'bellajs'
+import { isFunction, genid, sort } from 'bellajs'
 
 const MIME_TYPES = {
   stream: 'application/octet-stream',
@@ -42,10 +41,12 @@ const addRequestProperties = (req) => {
   req.method = req.method.toUpperCase()
   req.ip = getIp(req)
   req.params = {}
-  req.query = {}
   req.body = {}
+
   const url = new URL(req.url, SIM_BASE_URL)
   req.path = url.pathname
+  req.query = querystring.parse(url.searchParams.toString())
+  req._url = url
 }
 
 const addResponseMethods = (req, res) => {
@@ -83,20 +84,43 @@ const addResponseMethods = (req, res) => {
   }
 }
 
+const regexify = (str) => {
+  const arr = str.split('/').map((path) => {
+    if (/^:[a-z]+$/.test(path)) {
+      return `(?<${path.slice(1)}>[a-zA-Z0-9_-]+)`
+    }
+    return path
+  })
+  return new RegExp(`^${arr.join('/')}$`)
+}
+
+const parseParams = (reg, path) => {
+  const matched = path.match(reg)
+  if (!matched) {
+    return null
+  }
+  const params = { ...matched.groups }
+  return Object.keys(params).length > 0 ? params : null
+}
+
+const resort = (routers) => {
+  const fixedRouters = routers.filter(item => item.isFixed === true)
+  const regexRouters = routers.filter(item => !item.isFixed)
+  const fixedUpdate = sort(fixedRouters, (a, b) => {
+    return a.regpath.length < b.regpath.length ? 1 : a.regpath.length > b.regpath.length ? -1 : 0
+  })
+  const regexUpdate = sort(regexRouters, (a, b) => {
+    return a.regpath.toString().length < b.regpath.toString().length ?
+      1 : a.regpath.toString().length > b.regpath.toString().length ? -1 : 0
+  })
+  return [
+    ...fixedUpdate,
+    ...regexUpdate,
+  ]
+}
+
 export default (opts = {}) => {
   const emitter = new EventEmitter()
-
-  const router = findMyWay({
-    allowUnsafeRegex: false,
-    caseSensitive: true,
-    defaultRoute: (req, res) => {
-      emitter.emit('notfound', req, res)
-
-      if (!res.writableEnded) {
-        res.type('').status(404).end(STATUS_CODES['404'])
-      }
-    },
-  })
 
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -171,23 +195,39 @@ export default (opts = {}) => {
     parseBody,
   ]
 
+  let routers = []
+
   const addRoute = (method, pattern, handlers = []) => {
-    router.on(method, pattern, async (req, res, params, store, searchParams) => { // eslint-disable-line
-      req.query = searchParams
+    const isFixed = !pattern.includes(':')
+    const regpath = isFixed ? pattern.toLowerCase() : regexify(pattern)
+    const router = {
+      method: method.toUpperCase(),
+      isFixed,
+      regpath,
+      handlers,
+    }
+    routers = resort([
+      ...routers,
+      router,
+    ])
+  }
+
+  const isCallable = (route, req) => {
+    const { method, regpath, isFixed } = route
+    if (method !== req.method) {
+      return false
+    }
+    const pathname = req.path
+    if (isFixed && pathname === regpath) {
+      return true
+    }
+
+    const params = parseParams(regpath, pathname)
+    if (params) {
       req.params = params
-      for (const handle of handlers) {
-        try {
-          if (res.writableEnded) {
-            break
-          }
-          await handle(req, res)
-        } catch (err) {
-          err.errorCode = 500
-          emitter.emit('error', err, req, res)
-          res.status(500).send(STATUS_CODES['500'])
-        }
-      }
-    })
+      return true
+    }
+    return false
   }
 
   const onHttpRequest = async (req, res) => {
@@ -197,7 +237,33 @@ export default (opts = {}) => {
       }
       await fn(req, res)
     }
-    router.lookup(req, res)
+
+    const rindex = routers.findIndex(r => isCallable(r, req))
+    if (rindex > -1) {
+      const router = routers[rindex]
+      const { handlers } = router
+      for (const handle of handlers) {
+        if (res.writableEnded) {
+          break
+        }
+        try {
+          await handle(req, res)
+        } catch (err) {
+          err.errorCode = 500
+          emitter.emit('error', err, req, res)
+          res.status(500).send(STATUS_CODES['500'])
+          break
+        }
+      }
+    }
+
+    if (!res.writableEnded) {
+      emitter.emit('notfound', req, res)
+    }
+
+    if (!res.writableEnded) {
+      res.type('').status(404).end(STATUS_CODES['404'])
+    }
   }
 
   const listen = (port = 7001, host = '0.0.0.0', callback = false) => {
