@@ -2,6 +2,8 @@
 
 /* eslint-env jest */
 
+import http from 'node:http'
+
 import request from 'supertest'
 
 import restfun from '../index.js'
@@ -53,6 +55,29 @@ describe('Check option `cors`', () => {
 describe('Check use() method', () => {
   test('GET / ', (done) => {
     const server = restfun()
+    server.use((req, res) => {
+      res.setHeader('avanced-test-case', 'use-method')
+    })
+    server.get('/', (req, res) => {
+      res.html('Hello restfun')
+    })
+    const app = server.listen(PORT)
+    request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect((res) => {
+        expect(res.text).toEqual('Hello restfun')
+        expect(res.headers['avanced-test-case']).toEqual('use-method')
+      })
+      .expect(200, done)
+  })
+})
+
+describe('Check dedicated server', () => {
+  test('GET / ', (done) => {
+    const server = restfun({
+      server: http.createServer(),
+    })
     server.use((req, res) => {
       res.setHeader('avanced-test-case', 'use-method')
     })

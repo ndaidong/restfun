@@ -129,6 +129,7 @@ export default (opts = {}) => {
 
   const {
     cors = {},
+    server = null,
     noDelay = true,
     keepAlive = false,
     maxHeaderSize = 16384,
@@ -148,6 +149,8 @@ export default (opts = {}) => {
     headersTimeout,
     requestTimeout,
   }
+
+  const restfunServer = server || http.createServer(serverOptions)
 
   const addCorsHeaders = (req, res) => {
     Object.keys(corsHeaders).forEach((k) => {
@@ -266,11 +269,12 @@ export default (opts = {}) => {
     }
   }
 
+  restfunServer.on('request', onHttpRequest)
+
   const listen = (port = 7001, host = '0.0.0.0', callback = false) => {
     const fn = isFunction(callback) ? callback : isFunction(host) ? host : doNothing
     const hs = isFunction(host) ? '0.0.0.0' : host
-    const server = http.createServer(serverOptions, onHttpRequest)
-    return server.listen(Number(port), hs, fn)
+    return restfunServer.listen(Number(port), hs, fn)
   }
 
   return {
