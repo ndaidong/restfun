@@ -91,7 +91,6 @@ server.get('/categories/:slug/search', (req, res) => {
 const MY_TOKEN = 'Bearer Ot1R4UfJ5P510t1tpyU2G8iM341V0bWLw485DauF'
 const auth = (req, res) => {
   const token = req.headers['authorization']
-  console.log(token)
   if (token !== MY_TOKEN) {
     res.status(401).json({
       status: 'error',

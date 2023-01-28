@@ -37,7 +37,7 @@ const getIp = (req) => {
   return headers['x-forwarded-for'] || remoteAddress || socketAddress || ''
 }
 
-const addRequestProperties = (req) => {
+const modifyRequest = (req) => {
   req.method = req.method.toUpperCase()
   req.ip = getIp(req)
   req.params = {}
@@ -47,9 +47,13 @@ const addRequestProperties = (req) => {
   req.path = url.pathname
   req.query = querystring.parse(url.searchParams.toString())
   req._url = url
+
+  req.getHeader = (key) => {
+    return req.headers[key.toLowerCase()] || ''
+  }
 }
 
-const addResponseMethods = (req, res) => {
+const modifyResponse = (req, res) => {
   res.status = (code = 200) => {
     if (!res.writableEnded) {
       res.statusCode = code
@@ -192,8 +196,8 @@ export default (opts = {}) => {
   }
 
   const modifications = [
-    addRequestProperties,
-    addResponseMethods,
+    modifyRequest,
+    modifyResponse,
     addCorsHeaders,
     parseBody,
   ]
