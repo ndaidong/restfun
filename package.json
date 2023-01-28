@@ -1,6 +1,6 @@
 {
   "name": "restfun",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Minimal and fast rest api on the edges",
   "homepage": "https://www.npmjs.com/package/restfun",
   "repository": {

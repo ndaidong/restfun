@@ -11,20 +11,9 @@ To run minimal and fast rest api on the edges.
 
 ## Install
 
-### Node.js
-
 ```bash
 pnpm i restfun
 ```
-
-### Bun
-
-- not yet
-
-### Deno
-
-- not yet
-
 
 ## Usage
 
@@ -43,14 +32,6 @@ server.get('/', (req, res) => {
 
 server.listen(3001)
 ```
-
-### Bun
-
-- not yet
-
-### Deno
-
-- not yet
 
 ## APIs
 
@@ -131,6 +112,7 @@ Along with what are inherited from their prototype, `restfun` adds the following
 - `req.params`
 - `req.query`
 - `req.body`
+- `req.getHeader()`
 - `res.type()`
 - `res.status()`
 - `res.json()`
