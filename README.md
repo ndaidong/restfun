@@ -6,8 +6,6 @@ To run minimal and fast rest api on the edges.
 [![CodeQL](https://github.com/ndaidong/restfun/workflows/CodeQL/badge.svg)](https://github.com/ndaidong/restfun/actions/workflows/codeql-analysis.yml)
 [![CI test](https://github.com/ndaidong/restfun/workflows/ci-test/badge.svg)](https://github.com/ndaidong/restfun/actions/workflows/ci-test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/restfun/badge.svg)](https://coveralls.io/github/ndaidong/restfun)
-[![CodeFactor](https://www.codefactor.io/repository/github/ndaidong/restfun/badge)](https://www.codefactor.io/repository/github/ndaidong/restfun)
-
 
 ## Install
 
