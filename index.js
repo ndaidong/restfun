@@ -4,7 +4,7 @@ import http, { STATUS_CODES, METHODS } from 'node:http'
 import querystring from 'node:querystring'
 import { EventEmitter } from 'node:events'
 
-import { isFunction, genid, sort } from 'bellajs'
+import { randomUUID } from 'node:crypto'
 
 const MIME_TYPES = {
   stream: 'application/octet-stream',
@@ -26,7 +26,11 @@ const TYPES_FOR_BODY_PARSER = [
   'application/x-www-form-urlencoded',
 ]
 
-const SIM_BASE_URL = `http://rest-${genid(80)}.fun`
+const SIM_BASE_URL = `http://rest-${randomUUID()}.fun`
+
+const isFunction = (val) => {
+  return {}.toString.call(val) === '[object Function]'
+}
 
 const doNothing = () => {}
 
@@ -110,10 +114,10 @@ const parseParams = (reg, path) => {
 const resort = (routers) => {
   const fixedRouters = routers.filter(item => item.isFixed === true)
   const regexRouters = routers.filter(item => !item.isFixed)
-  const fixedUpdate = sort(fixedRouters, (a, b) => {
+  const fixedUpdate = fixedRouters.sort((a, b) => {
     return a.regpath.length < b.regpath.length ? 1 : a.regpath.length > b.regpath.length ? -1 : 0
   })
-  const regexUpdate = sort(regexRouters, (a, b) => {
+  const regexUpdate = regexRouters.sort((a, b) => {
     return a.regpath.toString().length < b.regpath.toString().length ?
       1 : a.regpath.toString().length > b.regpath.toString().length ? -1 : 0
   })
@@ -182,7 +186,7 @@ export default (opts = {}) => {
       }).on('end', () => {
         try {
           const body = Buffer.concat(bodyParts).toString()
-          const data = (ct === 'application/json') ? JSON.parse(body) : querystring.parse(body)
+          const data = (ct.startsWith('application/json')) ? JSON.parse(body) : querystring.parse(body)
           req.body = data
         } catch (err) {
           err.errorCode = 400
