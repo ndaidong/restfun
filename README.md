@@ -11,6 +11,7 @@ To run minimal and fast rest api on the edges.
 
 ```bash
 pnpm i restfun
+bun add restfun
 ```
 
 ## Usage
