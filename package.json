@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "pretest": "npm run lint",
-    "test": "ENV=test node --test --experimental-test-coverage --test-force-exit"
+    "test": "ENV=test node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-force-exit"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
