@@ -5,7 +5,6 @@ To run minimal and fast rest api on the edges.
 [![npm](https://img.shields.io/npm/v/restfun?color=green)](https://www.npmjs.com/package/restfun)
 [![CodeQL](https://github.com/ndaidong/restfun/workflows/CodeQL/badge.svg)](https://github.com/ndaidong/restfun/actions/workflows/codeql-analysis.yml)
 [![CI test](https://github.com/ndaidong/restfun/workflows/ci-test/badge.svg)](https://github.com/ndaidong/restfun/actions/workflows/ci-test.yml)
-[![Coverage Status](https://coveralls.io/repos/github/ndaidong/restfun/badge.svg)](https://coveralls.io/github/ndaidong/restfun)
 
 ## Install
 
@@ -84,7 +83,10 @@ Return a `restfun` instance with the following methods:
 - `get(pattern, handler)`: routes GET request to the specified pattern
 - `post(pattern, handler)`: routes POST request to the specified pattern
 - `put(pattern, handler)`: routes PUT request to the specified pattern
+- `patch(pattern, handler)`: routes PATCH request to the specified pattern
 - `delete(pattern, handler)`: routes DELETE request to the specified pattern
+- `head(pattern, handler)`: routes HEAD request to the specified pattern
+- `options(pattern, handler)`: routes OPTIONS request to the specified pattern
 - `route(METHOD, pattern, handler`: another way to add router using any HTTP methods
 - `use(handler)`: insert a handler in the middle of request/response processing, before the router handlers
 - `notFound(handler)`: add handler to deal with 404 error
@@ -121,7 +123,7 @@ Along with what are inherited from their prototype, `restfun` adds the following
 ## Benchmark
 
 ```sh
-autocannon -c 100 -w 4 -d 20 http://0.0.0.0:3001
+oha -n 100 -c 4 -z 20s --disable-keepalive http://0.0.0.0:3001
 ```
 
 ![Benchmark](https://i.imgur.com/vmZSAwT.png)

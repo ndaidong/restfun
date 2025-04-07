@@ -189,6 +189,7 @@ export default (opts = {}) => {
           const data = (ct.startsWith('application/json')) ? JSON.parse(body) : querystring.parse(body)
           req.body = data
         } catch (err) {
+          req.destroy()
           err.errorCode = 400
           emitter.emit('error', err, req, res)
           res.status(400).send(STATUS_CODES['400'])
@@ -287,6 +288,15 @@ export default (opts = {}) => {
 
   return {
     listen,
+    close: restfunServer.close,
+    head: (...args) => {
+      const pattern = args.shift()
+      addRoute('HEAD', pattern, args)
+    },
+    options: (...args) => {
+      const pattern = args.shift()
+      addRoute('OPTIONS', pattern, args)
+    },
     get: (...args) => {
       const pattern = args.shift()
       addRoute('GET', pattern, args)
@@ -294,6 +304,10 @@ export default (opts = {}) => {
     put: (...args) => {
       const pattern = args.shift()
       addRoute('PUT', pattern, args)
+    },
+    patch: (...args) => {
+      const pattern = args.shift()
+      addRoute('PATCH', pattern, args)
     },
     post: (...args) => {
       const pattern = args.shift()

@@ -3,3 +3,6 @@ coverage
 .github
 pnpm-lock.yaml
 examples
+bun.lockb
+.eslintignore
+.eslintrc.json

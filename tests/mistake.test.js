@@ -1,6 +1,6 @@
 // mistake.test.js
-
-/* eslint-env jest */
+import { describe, it } from 'node:test'
+import assert from 'node:assert'
 
 import request from 'supertest'
 
@@ -21,22 +21,22 @@ server.onError((err, req, res) => {
 const app = server.listen(PORT)
 
 describe('Check notfound request', () => {
-  test('GET /notfound', (done) => {
+  it('GET /notfound', (done) => {
     request(app)
       .get('/notfound')
       .expect((res) => {
-        expect(res.text).toEqual('Not Found')
+        assert.ok(res.text === 'Not Found')
       })
       .expect(404, done)
   })
 })
 
 describe('Check server error request', () => {
-  test('GET /fatal should throw error 500', (done) => {
+  it('GET /fatal should throw error 500', (done) => {
     request(app)
       .get('/fatal')
       .expect((res) => {
-        expect(res.text).toEqual('Server Internal Error')
+        assert.ok(res.text === 'Server Internal Error')
       })
       .expect(500, done)
   })

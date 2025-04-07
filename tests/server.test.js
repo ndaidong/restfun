@@ -1,10 +1,10 @@
 // server.test.js
-
-/* eslint-env jest */
+import { describe, it } from 'node:test'
+import assert from 'node:assert'
 
 import request from 'supertest'
 
-import { isObject, isArray, hasProperty } from 'bellajs'
+import { isObject, isArray, hasProperty } from '@ndaidong/bellajs'
 
 import { server, app } from './server.js'
 
@@ -15,64 +15,66 @@ describe('check restfun instance', () => {
     'post',
     'put',
     'delete',
+    'head',
+    'options',
     'use',
     'onError',
     'notFound',
   ]
 
-  test('restfun must be an object', () => {
-    expect(isObject(server)).toBeTruthy()
+  it('restfun must be an object', () => {
+    assert.ok(isObject(server))
   })
 
   methods.forEach((fun) => {
-    test(`restfun must have method: ${fun}`, () => {
-      expect(hasProperty(server, fun)).toBeTruthy()
+    it(`restfun must have method: ${fun}`, () => {
+      assert.ok(hasProperty(server, fun))
     })
   })
 })
 
 describe('Check regular REST requests', () => {
-  test('GET /', (done) => {
+  it('GET /', (done) => {
     request(app)
       .get('/')
       .expect('Content-Type', /html/)
       .expect((res) => {
-        expect(res.text).toEqual('Hello restfun')
+        assert.ok(res.text === 'Hello restfun')
       })
       .expect(200, done)
   })
 
-  test('GET /favicon.ico', (done) => {
+  it('GET /favicon.ico', (done) => {
     request(app)
       .get('/favicon.ico')
       .expect('Content-Type', 'image/x-icon')
       .expect(200, done)
   })
 
-  test('GET /categories', (done) => {
+  it('GET /categories', (done) => {
     request(app)
       .get('/categories')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.categories.length).toEqual(2)
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.categories.length === 2)
       })
       .expect(200, done)
   })
 
-  test('GET /categories/tech', (done) => {
+  it('GET /categories/tech', (done) => {
     request(app)
       .get('/categories/tech')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.slug).toEqual('tech')
-        expect(res.body.name).toEqual('Technology')
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.slug === 'tech')
+        assert.ok(res.body.name === 'Technology')
       })
       .expect(200, done)
   })
 
-  test('POST /categories', (done) => {
+  it('POST /categories', (done) => {
     request(app)
       .post('/categories')
       .send({
@@ -81,13 +83,13 @@ describe('Check regular REST requests', () => {
       })
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.action).toEqual('addCategory')
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.action === 'addCategory')
       })
       .expect(200, done)
   })
 
-  test('POST /categories with form submit', (done) => {
+  it('POST /categories with form submit', (done) => {
     request(app)
       .post('/categories')
       .type('form')
@@ -97,24 +99,24 @@ describe('Check regular REST requests', () => {
       })
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.action).toEqual('addCategory')
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.action === 'addCategory')
       })
       .expect(200, done)
   })
 
-  test('GET /categories - Reload', (done) => {
+  it('GET /categories - Reload', (done) => {
     request(app)
       .get('/categories')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.categories.length).toEqual(4)
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.categories.length === 4)
       })
       .expect(200, done)
   })
 
-  test('PUT /categories/tech', (done) => {
+  it('PUT /categories/tech', (done) => {
     request(app)
       .put('/categories/tech')
       .set('Content-Type', 'application/json')
@@ -123,159 +125,162 @@ describe('Check regular REST requests', () => {
       })
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.action).toEqual('updateCategory')
-        expect(res.body.slug).toEqual('tech')
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.action === 'updateCategory')
+        assert.ok(res.body.slug === 'tech')
       })
       .expect(200, done)
   })
 
-  test('GET /categories/tech - Reload', (done) => {
+  it('GET /categories/tech - Reload', (done) => {
     request(app)
       .get('/categories/tech')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.slug).toEqual('tech')
-        expect(res.body.name).toEqual('Tech')
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.slug === 'tech')
+        assert.ok(res.body.name === 'Tech')
       })
       .expect(200, done)
   })
 
-  test('DELETE /categories/sport', (done) => {
+  it('DELETE /categories/sport', (done) => {
     request(app)
       .delete('/categories/sport')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.action).toEqual('removeCategory')
-        expect(res.body.slug).toEqual('sport')
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.action === 'removeCategory')
+        assert.ok(res.body.slug === 'sport')
       })
       .expect(200, done)
   })
 
-  test('GET /categories - Reload again', (done) => {
+  it('GET /categories - Reload again', (done) => {
     request(app)
       .get('/categories')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.categories.length).toEqual(3)
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.categories.length === 3)
       })
       .expect(200, done)
   })
 
-  test('GET /search?q=restfun&type=module', (done) => {
+  it('GET /search?q=restfun&type=module', (done) => {
     request(app)
       .get('/search?q=restfun&type=module')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.q).toEqual('restfun')
-        expect(res.body.type).toEqual('module')
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.q === 'restfun')
+        assert.ok(res.body.type === 'module')
       })
       .expect(200, done)
   })
 
-  test('GET /search?q=restfun&type=module&type=commonjs', (done) => {
+  it('GET /search?q=restfun&type=module&type=commonjs', (done) => {
     request(app)
       .get('/search?q=restfun&type=module&type=commonjs')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.q).toEqual('restfun')
-        expect(isArray(res.body.type)).toBeTruthy()
-        expect(res.body.type).toEqual(['module', 'commonjs'])
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.q === 'restfun')
+        assert.ok(isArray(res.body.type))
+        assert.ok(res.body.type.includes('module'))
+        assert.ok(res.body.type.includes('commonjs'))
       })
       .expect(200, done)
   })
 
-  test('GET /search?q=restfun&type=module&type=commonjs&type=esm', (done) => {
+  it('GET /search?q=restfun&type=module&type=commonjs&type=esm', (done) => {
     request(app)
       .get('/search?q=restfun&type=module&type=commonjs&type=esm')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.q).toEqual('restfun')
-        expect(isArray(res.body.type)).toBeTruthy()
-        expect(res.body.type).toEqual(['module', 'commonjs', 'esm'])
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.q === 'restfun')
+        assert.ok(isArray(res.body.type))
+        assert.ok(res.body.type.includes('module'))
+        assert.ok(res.body.type.includes('commonjs'))
+        assert.ok(res.body.type.includes('esm'))
       })
       .expect(200, done)
   })
 
-  test('GET /categories/:slug/search?q=restfun&type=module', (done) => {
+  it('GET /categories/:slug/search?q=restfun&type=module', (done) => {
     request(app)
       .get('/categories/tech/search?q=restfun&type=module')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
+        assert.ok(isObject(res.body))
         const { params, query } = res.body
-        expect(params.slug).toEqual('tech')
-        expect(query.q).toEqual('restfun')
-        expect(query.type).toEqual('module')
+        assert.ok(params.slug === 'tech')
+        assert.ok(query.q === 'restfun')
+        assert.ok(query.type === 'module')
       })
       .expect(200, done)
   })
 })
 
 describe('Check auth with multi handlers', () => {
-  test('GET /account/balance - without token', (done) => {
+  it('GET /account/balance - without token', (done) => {
     request(app)
       .get('/account/balance')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.status).toEqual('error')
-        expect(res.body.message).toEqual('Unauthorized')
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.status === 'error')
+        assert.ok(res.body.message === 'Unauthorized')
       })
       .expect(401, done)
   })
 
-  test('GET /account/balance - with token', (done) => {
+  it('GET /account/balance - with token', (done) => {
     request(app)
       .get('/account/balance')
       .set('Authorization', 'Bearer Ot1R4UfJ5P510t1tpyU2G8iM341V0bWLw485DauF')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(isObject(res.body)).toBeTruthy()
-        expect(res.body.status).toEqual('ok')
-        expect(res.body.balance.total).toEqual(7500000)
+        assert.ok(isObject(res.body))
+        assert.ok(res.body.status === 'ok')
+        assert.ok(res.body.balance.total === 7500000)
       })
       .expect(200, done)
   })
 })
 
 describe('Check route() method', () => {
-  test('GET /health', (done) => {
+  it('GET /health', (done) => {
     request(app)
       .get('/health')
       .expect((res) => {
-        expect(res.text).toEqual('ok')
+        assert.ok(res.text === 'ok')
       })
       .expect(200, done)
   })
 })
 
 describe('Check error requests', () => {
-  test('POST /categories', (done) => {
+  it('POST /categories', (done) => {
     request(app)
       .post('/categories')
       .set('Content-Type', 'application/json')
       .send('')
       .expect('Content-Type', /text/)
       .expect((res) => {
-        expect(res.text).toEqual('Bad Request')
+        assert.ok(res.text === 'Bad Request')
       })
       .expect(400, done)
   })
 
-  test('POST /healthy', (done) => {
+  it('POST /healthy', (done) => {
     request(app)
       .post('/healthy')
       .send({})
       .expect('Content-Type', /text/)
       .expect((res) => {
-        expect(res.text).toEqual('Not Found')
+        assert.ok(res.text === 'Not Found')
       })
       .expect(404, done)
   })
