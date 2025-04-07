@@ -123,14 +123,14 @@ Along with what are inherited from their prototype, `restfun` adds the following
 ## Benchmark
 
 ```sh
-oha -n 100 -c 4 -z 20s --disable-keepalive http://0.0.0.0:3001
+oha -n 5000 -c 8 -z 30s --disable-keepalive http://0.0.0.0:3001
 ```
 
-![Benchmark](https://i.imgur.com/vmZSAwT.png)
+![Screenshot From 2025-04-07 15-32-32](https://github.com/user-attachments/assets/b91b4b67-1ed6-4ce6-a56b-1c15a98f30a0)
 
-- Intel® Core™ i7-10510U CPU @ 1.80GHz × 8
-- RAM DDR4 2667 MT/s 16GB
-- Node.js v18.12.1 on Debian 11.6
+- 12th Gen Intel(R) Core(TM) i5-12450HX (12) @ 4.40 GHz
+- RAM DDR5 4800 MT/s 24GB
+- Node.js v22.14.0 on Fedora 41
 
 
 ## Test
