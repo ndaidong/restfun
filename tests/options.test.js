@@ -1,6 +1,6 @@
 // options.test.js
-
-/* eslint-env jest */
+import { describe, it } from 'node:test'
+import assert from 'node:assert'
 
 import http from 'node:http'
 
@@ -11,7 +11,7 @@ import restfun from '../index.js'
 const PORT = process.env.PORT || 4001
 
 describe('Check option `cors`', () => {
-  test('GET / with default cors enabled', (done) => {
+  it('GET / with default cors enabled', (done) => {
     const server = restfun()
     server.get('/', (req, res) => {
       res.html('Hello restfun')
@@ -21,13 +21,13 @@ describe('Check option `cors`', () => {
       .get('/')
       .expect('Content-Type', /html/)
       .expect((res) => {
-        expect(res.text).toEqual('Hello restfun')
-        expect(res.headers['access-control-allow-origin']).toEqual('*')
+        assert.ok(res.text === 'Hello restfun')
+        assert.ok(res.headers['access-control-allow-origin'] === '*')
       })
       .expect(200, done)
   })
 
-  test('GET / with modified cors option', (done) => {
+  it('GET / with modified cors option', (done) => {
     const server = restfun({
       cors: {
         'Access-Control-Allow-Origin': 'https://rest.fun',
@@ -41,8 +41,8 @@ describe('Check option `cors`', () => {
       .get('/')
       .expect('Content-Type', /html/)
       .expect((res) => {
-        expect(res.text).toEqual('Hello restfun')
-        expect(res.headers['access-control-allow-origin']).toEqual('https://rest.fun')
+        assert.ok(res.text === 'Hello restfun')
+        assert.ok(res.headers['access-control-allow-origin'] === 'https://rest.fun')
       })
       .expect(200, done)
 
@@ -53,7 +53,7 @@ describe('Check option `cors`', () => {
 })
 
 describe('Check use() method', () => {
-  test('GET / ', (done) => {
+  it('GET / ', (done) => {
     const server = restfun()
     server.use((req, res) => {
       res.setHeader('avanced-test-case', 'use-method')
@@ -66,15 +66,15 @@ describe('Check use() method', () => {
       .get('/')
       .expect('Content-Type', /html/)
       .expect((res) => {
-        expect(res.text).toEqual('Hello restfun')
-        expect(res.headers['avanced-test-case']).toEqual('use-method')
+        assert.ok(res.text === 'Hello restfun')
+        assert.ok(res.headers['avanced-test-case'] === 'use-method')
       })
       .expect(200, done)
   })
 })
 
 describe('Check dedicated server', () => {
-  test('GET / ', (done) => {
+  it('GET / ', (done) => {
     const server = restfun({
       server: http.createServer(),
     })
@@ -89,8 +89,8 @@ describe('Check dedicated server', () => {
       .get('/')
       .expect('Content-Type', /html/)
       .expect((res) => {
-        expect(res.text).toEqual('Hello restfun')
-        expect(res.headers['avanced-test-case']).toEqual('use-method')
+        assert.ok(res.text === 'Hello restfun')
+        assert.ok(res.headers['avanced-test-case'] === 'use-method')
       })
       .expect(200, done)
   })

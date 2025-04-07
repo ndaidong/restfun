@@ -1,6 +1,6 @@
 // mistake.test.js
-
-/* eslint-env jest */
+import { describe, it } from 'node:test'
+import assert from 'node:assert'
 
 import request from 'supertest'
 
@@ -22,15 +22,18 @@ server.get('/', (req, res) => {
 const app = server.listen(PORT)
 
 describe('Check header accessing', () => {
-  test('GET / with header should work', (done) => {
+  it('GET / with header should work', (done) => {
     request(app)
       .get('/')
       .set('Device-Id', 'R123456789')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(res.body.deviceId).toEqual('R123456789')
-        expect(res.body.deviceIdGot).toEqual('R123456789')
+        assert.ok(res.body.deviceId === 'R123456789')
+        assert.ok(res.body.deviceIdGot === 'R123456789')
       })
-      .expect(200, done)
+      .expect(200, () => {
+        done()
+        server.close()
+      })
   })
 })
