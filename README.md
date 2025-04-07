@@ -123,7 +123,7 @@ Along with what are inherited from their prototype, `restfun` adds the following
 ## Benchmark
 
 ```sh
-oha -n 100 -c 4 -z 20s --disable-keepalive http://0.0.0.0:3001
+oha -n 5000 -c 8 -z 30s --disable-keepalive http://0.0.0.0:3001
 ```
 
 ![Screenshot From 2025-04-07 15-32-32](https://github.com/user-attachments/assets/b91b4b67-1ed6-4ce6-a56b-1c15a98f30a0)
