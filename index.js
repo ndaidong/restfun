@@ -8,15 +8,16 @@ import { randomUUID } from 'node:crypto'
 
 const MIME_TYPES = {
   stream: 'application/octet-stream',
-  html: 'text/html; charset=utf-8',
+  html: 'text/html',
   text: 'text/plain',
   css: 'text/css',
-  js: 'text/javascript; charset=utf-8',
-  json: 'application/json; charset=utf-8',
+  js: 'text/javascript',
+  json: 'application/json',
   png: 'image/png',
   jpg: 'image/jpg',
   gif: 'image/gif',
   webp: 'image/webp',
+  avif: 'image/avif',
   ico: 'image/x-icon',
   svg: 'image/svg+xml',
 }

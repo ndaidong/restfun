@@ -15,9 +15,7 @@ bun add restfun
 
 ## Usage
 
-### Node.js
-
-Hello word with `restfun`:
+Create a server.js file as below:
 
 ```js
 import restfun from 'restfun'
@@ -29,6 +27,14 @@ server.get('/', (req, res) => {
 })
 
 server.listen(3001)
+```
+
+Run with Node.js or Bun:
+
+```bash
+node server.js
+# or
+bun run server
 ```
 
 ## APIs
@@ -120,18 +126,94 @@ Along with what are inherited from their prototype, `restfun` adds the following
 - `res.html()`
 - `res.send()`
 
+An example:
+
+```js
+import restfun from 'restfun'
+
+export const server = restfun()
+
+const PORT = 3001
+const HOST = '0.0.0.0'
+
+server.get('/', async (req, res) => {
+  const ua = req.getHeader('user-agent')
+  console.log(`${req.ip} ${req.method} ${req.path}: ${ua}`)
+  res.html('Hello restfun')
+})
+
+server.listen(PORT, HOST, () => {
+  console.log(`Server started listening at http://${HOST}:${PORT}`)
+})
+````
+
 ## Benchmark
 
-```sh
+Here are the result by [oha](https://github.com/hatoo/oha) after the following command:
+
+```bash
 oha -n 5000 -c 8 -z 30s --disable-keepalive http://0.0.0.0:3001
 ```
 
-![Screenshot From 2025-04-07 15-32-32](https://github.com/user-attachments/assets/b91b4b67-1ed6-4ce6-a56b-1c15a98f30a0)
+- restfun with Node.js v22.14.0:
+
+```bash
+Summary:
+  Success rate: 100.00%
+  Total:  30.0002 secs
+  Slowest:  0.0130 secs
+  Fastest:  0.0001 secs
+  Average:  0.0004 secs
+  Requests/sec: 20592.5155
+
+  Total data: 7.66 MiB
+  Size/request: 13 B
+  Size/sec: 261.42 KiB
+```
+
+- restfun with Bun v1.2.10:
+
+```bash
+Summary:
+  Success rate: 100.00%
+  Total:  30.0004 secs
+  Slowest:  0.0189 secs
+  Fastest:  0.0000 secs
+  Average:  0.0002 secs
+  Requests/sec: 37074.3614
+
+  Total data: 13.79 MiB
+  Size/request: 13 B
+  Size/sec: 470.67 KiB
+```
+
+System specs:
 
 - 12th Gen Intel(R) Core(TM) i5-12450HX (12) @ 4.40 GHz
 - RAM DDR5 4800 MT/s 24GB
-- Node.js v22.14.0 on Fedora 41
 
+Under the same conditions, we also tested some other alternatives:
+
+| Library/Framework | Node.js v22.14.0 | Bun v1.2.10 | Deno v2.2.12 |
+|--|--|--|--|
+| restfun@0.0.18 | 20,592 | 37,074 | 6,645 |
+| fastify@5.3.2 | 22,815 | 42,978 | 7,199 |
+| koa@2.16.1 | 19,359 | 39,288 | 7,263 |
+| polka@1.0.0-next.28 | 21,840 | 16,189 | 3,392 |
+| nitro@2.11.9 | 15,450 | 14,596 | 6,580 |
+| express@5.1.0 | 11,237 | 37,832 | 6,170 |
+| hono@4.7.7 | 20,045 | 50,292 | 41,513 |
+| elysia@1.2.25 | 22,738 | 50,209 | 7,165 |
+| ultimate-express@1.4.6 | 48,377 | not support | not support |
+| hyper-express@6.17.3 | 49,427 | not support | not support |
+| Node HTTP module | 27,935 | 43,668 | 7,184  |
+| Bun.serve | not support | 53,702 | not support |
+| Deno.serve | not support | not support | 42,447 |
+
+* elysia run on Deno with `@elysiajs/node`
+* Node, Bun, Deno all have built-in server, but only Bun supports routers
+
+Looking into the above table, we can see that `restfun` is just for fun. Until now, I mainly use `hyper-express` in my projects. But I'm slowly switching to Bun as its built-in server is very cool. For the teams, I recommend to use a mix between `express` and `ultimate-express` then it has both standard and performance, dev friendly and production ready. If your project base on Bun and Deno, `hono` is still the best choice.
 
 ## Test
 
