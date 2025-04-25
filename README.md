@@ -213,7 +213,7 @@ Under the same conditions, we also tested some other alternatives:
 * elysia run on Deno with `@elysiajs/node`
 * Node, Bun, Deno all have built-in server, but only Bun supports routers
 
-Looking into the above table, we can see that `restfun` is just for fun. Until now, I mainly use `hyper-express` in my projects. But I'm slowly switching to Bun as its built-in server is very cool. For the teams, I recommend to use a mix between `express` and `ultimate-express` then it has both standard and performance, dev friendly and production ready. If your project base on Bun and Deno, `hono` is still the best choice.
+Looking into the above table, we can see that `restfun` is just for fun. Until now, I mainly use `hyper-express` in my projects. But I'm slowly switching to Bun as its built-in server is very cool. For the teams, I recommend to use a mix between `express` and `ultimate-express` then it has both standard and performance, dev friendly and production ready. If your project must work on Bun and Deno, `hono` is still the best choice.
 
 ## Test
 
