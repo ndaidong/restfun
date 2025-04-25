@@ -1,6 +1,6 @@
 {
   "name": "restfun",
-  "version": "0.0.16",
+  "version": "0.0.18",
   "description": "Minimal and fast rest api on the edges",
   "homepage": "https://www.npmjs.com/package/restfun",
   "repository": {
@@ -14,16 +14,15 @@
     "node": ">= 20"
   },
   "scripts": {
-    "start": "PORT=3001 node tests/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "pretest": "npm run lint",
     "test": "node --test --experimental-test-coverage --test-force-exit"
   },
   "devDependencies": {
-    "@eslint/js": "^9.22.0",
+    "@eslint/js": "^9.25.1",
     "@ndaidong/bellajs": "^12.0.1",
-    "eslint": "^9.22.0",
+    "eslint": "^9.25.1",
     "globals": "^16.0.0",
     "supertest": "^7.1.0"
   },
